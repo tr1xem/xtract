@@ -1,2 +1,3 @@
 # xtract
- xtract is a tool that takes a pdf and try to grab all questions from it and arrange them in a4 size paper so its easy to print them
+ A tool for automatically curating text form a read only pdf and exporting it to files 
+
