@@ -64,7 +64,24 @@ def crop_images(image_paths, output_folder, debug=False):
         for idx, (x1, y1, x2, y2) in enumerate(merged_boxes):
             cropped_image = img[y1:y2, x1:x2]
             
-            output_image_path = os.path.join(output_folder, f'cropped_image_{os.path.basename(image_path).split(".")[0]}_{idx + 1}.png')
+            # Add filename as watermark
+            filename_text = os.path.basename(image_path)
+            font_scale = 0.5
+            font_color = (255, 255, 255)  # White color
+            font_thickness = 1
+            font_face = cv2.FONT_HERSHEY_SIMPLEX
+            
+            # Get text size to position it correctly
+            text_size = cv2.getTextSize(filename_text, font_face, font_scale, font_thickness)[0]
+            text_x = cropped_image.shape[1] - text_size[0] - 5
+            text_y = cropped_image.shape[0] - 5
+            
+            # Put text on image
+            cv2.putText(cropped_image, filename_text, (text_x, text_y), font_face,
+                        font_scale, font_color, font_thickness)
+
+            output_image_path = os.path.join(output_folder,
+                                               f'cropped_image_{os.path.basename(image_path).split(".")[0]}_{idx + 1}.png')
             cv2.imwrite(output_image_path, cropped_image)
 
 def arrange_images_on_a4(input_folder):
@@ -77,6 +94,8 @@ def arrange_images_on_a4(input_folder):
     scaling_factor = 0.5  # Adjust this value to change the size of images on A4
     a4_sheet_index = 0
     a4_sheet = np.ones((A4_HEIGHT_PIXELS, A4_WIDTH_PIXELS, 3), dtype=np.uint8) * 255
+    
+    # Initialize offsets for placement
     x_offset = 50
     y_offset = 50
 
